@@ -13,20 +13,22 @@ fetch("http://localhost:3000/api/products/")
             console.table(products[i]);
             
 
-            let a = document.createElement("a")
-            items.appendChild(a)
-            a.href="./product.html?id=" + products[i]._id
+            let card = document.createElement("a")
+            items.appendChild(card)
+            card.href="./product.html?id=" + products[i]._id
 
             
             let article= document.createElement("article")
-            a.appendChild(article)
+            card.appendChild(article)
 
             let h3 = document.createElement("h3")
+            h3.setAttribute("clasx","productName")
             h3.innerHTML = products[i].name
             article.appendChild(h3)
 
             let p = document.createElement("p")
             p.innerHTML = products[i].description
+            p.setAttribute("class", "productDescription")
             article.appendChild(p)
 
             let img= document.createElement("img")

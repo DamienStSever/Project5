@@ -48,38 +48,40 @@ fetch("http://localhost:3000/api/products/" + id)
                 let cartProducts = {
                     id: product._id,
                     quantity: document.getElementById("quantity").value,
-                    colors: document.getElementById("colors").value,    
-                    
-                }
-                let cartProductsAdd = JSON.parse(localStorage.getItem("cart"))
-                
-                if (localStorage.getItem("cart"))  {
-                    cartProductsAdd.push(cartProducts)
-                    let productK = JSON.stringify(cartProductsAdd)
-                    localStorage.setItem("cart", productK)
-                    if (cartProductsAdd[id] === product._id && cartProductsAdd[colors] === product.colors.value ) {
-                       JSON.parse(cartProductsAdd[quantity]) + JSON.parse(quantity.value)
-                       localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
-                    }
+                    color: document.getElementById("colors").value,
 
-                   /* let cartProductsAdd = JSON.parse(localStorage.getItem("cart"))
-                     cartProductsAdd.forEach((cartProduct) => {
-                        if (cartProduct[0] === product._id && cartProduct[2] === colors.value ) {
-                            cartProduct[1] += quantity.value   
-                        
-                        }                      
-                        
-                    })*/
-                  
-                }
-                else{
-                cartProductsAdd = []
-                cartProductsAdd.push(cartProducts)
-                let productK = JSON.stringify(cartProductsAdd)
-                localStorage.setItem("cart", productK)
-                console.log(cartProducts);
                 }
                 
+                let cartProductsAdd = JSON.parse(localStorage.getItem("cart"))
+
+                if (cartProductsAdd) {
+                    console.log(cartProductsAdd);
+
+                    let resultFind = cartProductsAdd.find( 
+                        (sameProduct) => sameProduct.id === cartProducts.id && sameProduct.color === cartProducts.color);
+                        if (resultFind) {
+                            console.log("mise a jour ");
+                            resultFind.quantity = parseInt(resultFind.quantity) + parseInt(cartProducts.quantity);
+                            localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
+
+                        }
+                        else {
+                            console.log("ajout d un nouveau produit");
+                            cartProductsAdd.push(cartProducts)
+                            localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
+                        }
+
+
+                    
+
+                }
+                else {
+                    console.log("Creation du panier");
+                    cartProductsAdd = []
+                    cartProductsAdd.push(cartProducts)
+                    localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
+                }
+
 
 
             }

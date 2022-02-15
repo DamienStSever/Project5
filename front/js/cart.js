@@ -26,8 +26,9 @@ for (let item in itemJson) {
 
         let article = document.createElement("article")
         cart__item.appendChild(article)
+        article.setAttribute("class", "cart__item")
         article.setAttribute("data-id", itemJson[item].id)
-        article.setAttribute("data-color", itemJson[item].colors)
+        article.setAttribute("data-color", itemJson[item].color)
 
         let cart__item__img = document.createElement("div")
         article.appendChild(cart__item__img)
@@ -52,7 +53,7 @@ for (let item in itemJson) {
         console.log(nom)
 
         let color = document.createElement("p")
-        color.innerHTML = itemJson[item].colors
+        color.innerHTML = itemJson[item].color
         cart__item__content__descritpion.appendChild(color)
 
         let price = document.createElement("p")
