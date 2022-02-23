@@ -57,7 +57,6 @@ for (let item in itemJson) {
 
             let price = document.createElement("p")
             price.innerHTML = product.price
-            console.log(product.price);
             cartItemContentDescritpion.appendChild(price)
 
             let cartItemContentSettings = document.createElement("div")
@@ -81,7 +80,7 @@ for (let item in itemJson) {
             supp.setAttribute("class", "deleteItem")
             cartItemContentSettingsDelete.appendChild(supp)
 
-            //  Possibilité du chagmeent de quantié dans le Panier
+            //  Possibilité du chagmeent de quantité dans le Panier
             let input = document.createElement("input")
             cartItemContentSettingsQuantity.appendChild(input)
             input.setAttribute("type", "number")
@@ -105,11 +104,8 @@ for (let item in itemJson) {
 
                 itemJson.splice(itemJson[item], 1)
                 localStorage.setItem("cart", JSON.stringify(itemJson))
-                console.log(itemJson);
+                
             })
-
-
-
 
 
             // Total des Quantités
@@ -138,10 +134,44 @@ for (let item in itemJson) {
             totalP.innerHTML = priceMax */
 
 
+            console.log(itemJson[item].id);
+
+
         })
 
-
 }
+
+let order = document.getElementById("order")
+order.addEventListener("click", function () {
+    let contact = {
+        firstname: document.getElementById("firstName").value,
+        name: document.getElementById("lastName").value,
+        adress: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        email: document.getElementById("email").value
+    }
+
+    
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(contact)
+        
+    })
+        .then(function (res) {
+            if (res.ok) {
+                return res.json()
+            }
+
+        })
+        .then(function () {
+            document.getElementById("order")
+        })
+    
+})
 
 //}
 /* .catch (function (err) {
