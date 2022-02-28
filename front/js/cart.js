@@ -80,7 +80,7 @@ for (let item in itemJson) {
             supp.setAttribute("class", "deleteItem")
             cartItemContentSettingsDelete.appendChild(supp)
 
-            //  Possibilité du chagmeent de quantité dans le Panier
+            //  Possibilité du changement de quantité dans le Panier
             let input = document.createElement("input")
             cartItemContentSettingsQuantity.appendChild(input)
             input.setAttribute("type", "number")
@@ -101,10 +101,11 @@ for (let item in itemJson) {
             // Suppressio d un Article
 
             supp.addEventListener("click", function () {
+                console.log(itemJson.indexOf(itemJson[item]));
 
-                itemJson.splice(itemJson[item], 1)
+                itemJson.splice(itemJson.indexOf(itemJson[item]), 1)
                 localStorage.setItem("cart", JSON.stringify(itemJson))
-                
+
             })
 
 
@@ -112,8 +113,6 @@ for (let item in itemJson) {
             let totalQuantity = []
             for (let i = 0; i < itemJson.length; i++) {
                 totalQuantity.push(Number(itemJson[i].quantity))
-                console.log(totalQuantity);
-
             }
             let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
             let totalQ = document.getElementById("totalQuantity")
@@ -123,26 +122,26 @@ for (let item in itemJson) {
             let totalPrice = []
             let totalPriceByProduct = []
             totalPriceByProduct = [product.price * itemJson[item].quantity]
-            console.log(totalPriceByProduct);
             for (let i = 0; i < itemJson.length; i++) {
                 totalPrice.push(product.price * itemJson[i].quantity)
-                console.log(totalPrice);
+
             }
-            /* let priceMax = totalPrice.reduce((a, b,) => a + b, 0)
-             console.log(priceMax);
-            totalP = document.getElementById("totalPrice")
-            totalP.innerHTML = priceMax */
+            let priceMax = totalPrice.reduce((a, b) => a + b, 0)
+            let totalP = document.getElementById("totalPrice")
+            totalP.innerHTML = priceMax
 
 
-            console.log(itemJson[item].id);
+
 
 
         })
 
 }
-
+// Passer la commande 
 let order = document.getElementById("order")
-order.addEventListener("click", function () {
+order.addEventListener("click", function (e) {
+    e.preventDefault()
+    console.log("order");
     let contact = {
         firstname: document.getElementById("firstName").value,
         name: document.getElementById("lastName").value,
@@ -150,18 +149,30 @@ order.addEventListener("click", function () {
         city: document.getElementById("city").value,
         email: document.getElementById("email").value
     }
+    console.log(contact);
+
+    let productTab = []
+    for (let i = 0; i < itemJson.length; i++) {
+        productTab.push(itemJson[i].id)
+    }
+    console.log(productTab);
+
+    let command = JSON.stringify(contact) + productTab
+    console.log({ command });
 
     
     fetch("http://localhost:3000/api/products/order", {
-        method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(contact)
-        
+          method: "POST",
+          body : JSON.stringify({ contact, productTab }),
+          headers: {
+              "Accept": "application/json",
+              "Content-Type": "application/json"
+          }
+          
+
     })
         .then(function (res) {
+            console.log(res);
             if (res.ok) {
                 return res.json()
             }
@@ -170,7 +181,7 @@ order.addEventListener("click", function () {
         .then(function () {
             document.getElementById("order")
         })
-    
+
 })
 
 //}
