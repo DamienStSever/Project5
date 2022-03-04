@@ -90,12 +90,22 @@ for (let item in itemJson) {
             input.setAttribute("class", "itemQuantity")
 
             input.addEventListener("change", function () {
-                quantity.innerHTML = this.value 
-                
+                quantity.innerHTML = this.value
+
+
                 // Changement de quantité dans le Local Sotrage
                 let updateCart = JSON.parse(localStorage.getItem("cart"))
                 updateCart[item].quantity = this.value
                 localStorage.setItem("cart", JSON.stringify(updateCart))
+                totalQuantity.length = 0
+                for (let i = 0; i < itemJson.length; i++) {
+                    totalQuantity.push(Number(updateCart[i].quantity))
+
+                }
+                let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
+
+                let totalQ = document.getElementById("totalQuantity")
+                totalQ.innerHTML = quantityMax
             })
 
             // Suppression d un Article
@@ -114,23 +124,28 @@ for (let item in itemJson) {
             let totalQuantity = []
             for (let i = 0; i < itemJson.length; i++) {
                 totalQuantity.push(Number(itemJson[i].quantity))
+               // console.log(totalQuantity);
+                    ;
             }
             let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
             let totalQ = document.getElementById("totalQuantity")
             totalQ.innerHTML = quantityMax
 
             //Total Prix
-            let totalPrice = []
-            console.log(totalPrice);
-            let totalPriceByProduct = []
-            totalPriceByProduct = [product.price * itemJson[item].quantity]
-            console.log(totalPriceByProduct);
-            
-            totalPrice.push(Number(totalPriceByProduct))
 
-            
+            let totalPrice = []
+
+            for (let i = 0; i < itemJson.length; i++) {
+
+                totalPrice.push(Number(product.price * itemJson[i].quantity))
+                console.log(product.price);
+                console.log(totalPrice);
+
+
+            }
+
             let priceMax = totalPrice.reduce((a, b) => a + b, 0)
-            console.log(priceMax);
+            // console.log(priceMax);
             let totalP = document.getElementById("totalPrice")
             totalP.innerHTML = priceMax
 
@@ -150,38 +165,38 @@ order.addEventListener("click", function (e) {
         address: document.getElementById("address").value,
         city: document.getElementById("city").value,
         email: document.getElementById("email").value,
-       
+
     }
-    // Traitement des erreurs dans le formulaire via Regx
-    if (/^[\w\W]{1,}$/.test(firstName.value)){
+    // Traitement des erreurs dans le formulaire via Regex
+    if (/^[\w\W]{1,}$/.test(firstName.value)) {
     }
-    else{
+    else {
         window.alert("Erreur Prénom");
     }
 
-    if (/^[\w\W]{1,}$/.test(lastName.value)){
+    if (/^[\w\W]{1,}$/.test(lastName.value)) {
     }
-    else{
+    else {
         window.alert("Erreur Nom")
     }
 
-    if (/^[\w\W ]{1,}$/.test(address.value)){
+    if (/^[\w\W ]{1,}$/.test(address.value)) {
 
     }
-    else{
+    else {
         window.alert("Erreur adresse")
     }
 
-    if (/^[\w\W ]{1,}$/.test(city.value)){
+    if (/^[\w\W ]{1,}$/.test(city.value)) {
 
     }
-    else{
+    else {
         window.alert("Erreur Ville")
     }
-    if (/^[\w]+[@]{1}[\w]+[.]{1}[\w]{1,}$/.test(email.value)){
+    if (/^[\w]+[@]{1}[\w]+[.]{1}[\w]{1,}$/.test(email.value)) {
 
     }
-    else{
+    else {
         window.alert("Erreur email")
     }
 
@@ -191,15 +206,15 @@ order.addEventListener("click", function (e) {
         products.push(itemJson[i].id)
     }
     console.log(products);
-    
+
     fetch("http://localhost:3000/api/products/order", {
-          method: "POST",
-          body : JSON.stringify({ contact, products }),
-          headers: {
-              "Accept": "application/json",
-              "Content-Type": "application/json"
-          }
-          
+        method: "POST",
+        body: JSON.stringify({ contact, products }),
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+
 
     })
         .then(function (res) {
@@ -212,7 +227,14 @@ order.addEventListener("click", function (e) {
         .then(function (order) {
             console.log(order);
             document.getElementById("order")
+            localStorage.setItem("orderId", order.orderId)
+
+            document.location.href = "confirmation.html"
         })
+        confOrder = document.getElementById("orderId")
+        confOrder.innerHTML = localStorage.getItem("orderId")
+        console.log(localStorage.getItem("orderId"))
+        localStorage.clear();
 
 })
 
