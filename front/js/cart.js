@@ -4,11 +4,9 @@ let items = localStorage.getItem("cart");
 let itemJson = JSON.parse(items);
 
 
-
-console.table(items)
-
 // Affichage des données des articles
-
+let maxPrice = []
+let totalQuantity = []
 for (let item in itemJson) {
     fetch("http://localhost:3000/api/products/" + itemJson[item].id)
         .then(function (res) {
@@ -92,62 +90,73 @@ for (let item in itemJson) {
             input.addEventListener("change", function () {
                 quantity.innerHTML = this.value
 
-
                 // Changement de quantité dans le Local Sotrage
                 let updateCart = JSON.parse(localStorage.getItem("cart"))
                 updateCart[item].quantity = this.value
                 localStorage.setItem("cart", JSON.stringify(updateCart))
+                
+                // changement de la quantité total si changement de quantité
                 totalQuantity.length = 0
                 for (let i = 0; i < itemJson.length; i++) {
                     totalQuantity.push(Number(updateCart[i].quantity))
-
+                    console.log(totalQuantity);
                 }
                 let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
-
                 let totalQ = document.getElementById("totalQuantity")
                 totalQ.innerHTML = quantityMax
+
+                //Changement du prix total si changement de quantité
+                maxPrice.length = 0
+                updateCart[item].price = 0
+                updateCart[item].price += product.price * quantity.innerHTML
+                console.log(updateCart[item].price);
+                for (let i = 0; i < itemJson.length; i++) {
+                    console.log(product.price);
+                    console.log(updateCart[i].price);
+                    maxPrice.push(Number( updateCart[i].price))
+                    console.log(maxPrice);
+                }
+                totalPrice = maxPrice.reduce((a, b) => a + b, 0)
+                let totalP = document.getElementById("totalPrice")
+                totalP.innerHTML = totalPrice
             })
 
             // Suppression d un Article
 
             supp.addEventListener("click", function () {
+
                 console.log(itemJson.indexOf(itemJson[item]));
                 alert(" Le produit est supprimé")
-                location.reload()
                 itemJson.splice(itemJson.indexOf(itemJson[item]), 1)
                 localStorage.setItem("cart", JSON.stringify(itemJson))
+                cartItem.removeChild(article)
 
+                // Changement du total Quantité après la suppression
+                totalQuantity.length = 0
+                for (let i = 0; i < itemJson.length; i++) {
+                    totalQuantity.push(Number(itemJson[i].quantity))
+                    console.log(totalQuantity);
+                }
+                let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
+                let totalQ = document.getElementById("totalQuantity")
+                totalQ.innerHTML = quantityMax
             })
 
 
             // Total des Quantités
-            let totalQuantity = []
-            for (let i = 0; i < itemJson.length; i++) {
-                totalQuantity.push(Number(itemJson[i].quantity))
-               // console.log(totalQuantity);
-                    ;
-            }
+
+
+            totalQuantity.push(Number(itemJson[item].quantity))
             let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
             let totalQ = document.getElementById("totalQuantity")
             totalQ.innerHTML = quantityMax
 
             //Total Prix
-
-            let totalPrice = []
-
-            for (let i = 0; i < itemJson.length; i++) {
-
-                totalPrice.push(Number(product.price * itemJson[i].quantity))
-                console.log(product.price);
-                console.log(totalPrice);
-
-
-            }
-
-            let priceMax = totalPrice.reduce((a, b) => a + b, 0)
-            // console.log(priceMax);
+            maxPrice.push(Number(product.price * quantity.innerHTML))
+            let totalPrice = maxPrice.reduce((a, b) => a + b, 0)
             let totalP = document.getElementById("totalPrice")
-            totalP.innerHTML = priceMax
+            totalP.innerHTML = totalPrice
+
 
         })
 
@@ -231,10 +240,10 @@ order.addEventListener("click", function (e) {
 
             document.location.href = "confirmation.html"
         })
-        confOrder = document.getElementById("orderId")
-        confOrder.innerHTML = localStorage.getItem("orderId")
-        console.log(localStorage.getItem("orderId"))
-        localStorage.clear();
+    confOrder = document.getElementById("orderId")
+    confOrder.innerHTML = localStorage.getItem("orderId")
+    console.log(localStorage.getItem("orderId"))
+    localStorage.clear();
 
 })
 
