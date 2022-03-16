@@ -16,6 +16,9 @@ for (let item in itemJson) {
             }
         })
 
+        .catch(function (error) {
+            alert("Erreur", error)
+        })
 
         .then(function (product) {
 
@@ -113,7 +116,7 @@ for (let item in itemJson) {
                 let totalP = document.getElementById("totalPrice")
                 totalP.innerHTML = totalPrice
             })
-         
+
             // Suppression d un Article
 
             supp.addEventListener("click", function () {
@@ -175,16 +178,18 @@ order.addEventListener("click", function (e) {
 
     }
     // Traitement des erreurs dans le formulaire via Regex
-    if (/^[\w\W]{1,}$/.test(firstName.value)) {
+    if (/^[A-Za-z]{1,}$/.test(firstName.value)) {
     }
     else {
         window.alert("Erreur Prénom");
+        return false
     }
 
     if (/^[\w\W]{1,}$/.test(lastName.value)) {
     }
     else {
         window.alert("Erreur Nom")
+        return false
     }
 
     if (/^[\w\W ]{1,}$/.test(address.value)) {
@@ -192,6 +197,7 @@ order.addEventListener("click", function (e) {
     }
     else {
         window.alert("Erreur adresse")
+        return false
     }
 
     if (/^[\w\W ]{1,}$/.test(city.value)) {
@@ -199,12 +205,14 @@ order.addEventListener("click", function (e) {
     }
     else {
         window.alert("Erreur Ville")
+        return false
     }
     if (/^[\w]+[@]{1}[\w]+[.]{1}[\w]{1,}$/.test(email.value)) {
 
     }
     else {
         window.alert("Erreur email")
+        return false
     }
 
     // Envoi de la demande de commande
@@ -231,21 +239,21 @@ order.addEventListener("click", function (e) {
             }
 
         })
+        
         .then(function (order) {
-            console.log(order);
-            document.getElementById("order")
-            localStorage.setItem("orderId", order.orderId)
-
-            document.location.href = "confirmation.html"
+                console.log(order);
+                document.getElementById("order")
+                localStorage.setItem("orderId", order.orderId)
+                document.location.href = "confirmation.html"
+                
+                console.log(contact.firstName);
+                alert("Merci pour votre commande "+ contact.firstName +" "+ contact.lastName)
         })
-    confOrder = document.getElementById("orderId")
-    confOrder.innerHTML = localStorage.getItem("orderId")
-    console.log(localStorage.getItem("orderId"))
-    localStorage.clear();
+        .catch (function (error) {
+            alert("Erreur  manque de données dans la commande", error)
+        })
 
 })
 
 
-/* .catch (function (err) {
-    console.log("Erreur", err)
-}) */
+
