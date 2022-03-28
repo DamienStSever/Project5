@@ -1,4 +1,5 @@
 confOrder = document.getElementById("orderId")
-confOrder.innerHTML = localStorage.getItem("orderId")
-console.log(localStorage.getItem("orderId"))
+let params = new URLSearchParams(document.location.search)
+let orderId= params.get("orderId")
+confOrder.innerHTML = orderId
 localStorage.clear();

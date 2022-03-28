@@ -3,7 +3,15 @@
 let items = localStorage.getItem("cart");
 let itemJson = JSON.parse(items);
 
+// Fonction pour permettre la création des divers éléments des articles dans le panier
 
+function createItem(type, element, className) {
+    let newItem = document.createElement(type)
+    newItem.setAttribute("class", className)
+    element.appendChild(newItem)
+    return newItem
+    
+}
 // Affichage des données des articles
 let maxPrice = []
 let totalQuantity = []
@@ -25,32 +33,28 @@ for (let item in itemJson) {
 
             let cartItem = document.getElementById("cart__items")
 
-            let article = document.createElement("article")
-            cartItem.appendChild(article)
-            article.setAttribute("class", "cart__item")
+            let article = createItem("article", cartItem, "cart__item")
             article.setAttribute("data-id", itemJson[item].id)
             article.setAttribute("data-color", itemJson[item].color)
 
-            let cartItemImg = document.createElement("div")
-            article.appendChild(cartItemImg)
-            cartItemImg.setAttribute("class", "cart__item__img")
-
+            let cartItemImg = createItem("div", article, "cart__item__img")  
+            
+            
             let img = document.createElement("img")
             img.src = product.imageUrl
             img.alt = product.altTxt
             cartItemImg.appendChild(img)
 
-            let cartItemContent = document.createElement("div")
-            cartItemContent.setAttribute("class", "cart__item__content")
-            article.appendChild(cartItemContent)
+            let cartItemContent = createItem("div", article, "cart__item__content")
+           
 
-            let cartItemContentDescritpion = document.createElement("div")
-            cartItemContentDescritpion.setAttribute("class", "cart__item__content__descritpion")
-            cartItemContent.appendChild(cartItemContentDescritpion)
+            let cartItemContentDescritpion = createItem("div", cartItemContent, "cart__item__content__description")
+            
 
             let nom = document.createElement("h2")
             nom.innerHTML = product.name
             cartItemContentDescritpion.appendChild(nom)
+
 
             let color = document.createElement("p")
             color.innerHTML = itemJson[item].color
@@ -60,26 +64,20 @@ for (let item in itemJson) {
             price.innerHTML = product.price
             cartItemContentDescritpion.appendChild(price)
 
-            let cartItemContentSettings = document.createElement("div")
-            cartItemContentSettings.setAttribute("class", "cart__item__content__settings")
-            cartItemContent.appendChild(cartItemContentSettings)
-
-            let cartItemContentSettingsQuantity = document.createElement("div")
-            cartItemContentSettingsQuantity.setAttribute("class", "cart__item__content__settings__quantity")
-            cartItemContentSettings.appendChild(cartItemContentSettingsQuantity)
+            let cartItemContentSettings = createItem("div", cartItemContent, "cart__item__content__settings")
+            
+            let cartItemContentSettingsQuantity = createItem("div", cartItemContentSettings,"cart__item__content__settings__quantity" )
+            
 
             let quantity = document.createElement("p")
             quantity.innerHTML = itemJson[item].quantity
             cartItemContentSettingsQuantity.appendChild(quantity)
 
-            let cartItemContentSettingsDelete = document.createElement("div")
-            cartItemContentSettingsDelete.setAttribute("class", "cart__item__content__settings__delete")
-            cartItemContentSettings.appendChild(cartItemContentSettingsDelete)
-
-            let supp = document.createElement("p")
+            let cartItemContentSettingsDelete = createItem("div", cartItemContentSettings, "cart__item__content__settings__delete")
+            
+            let supp = createItem("p", cartItemContentSettingsDelete, "deleteItem")
             supp.innerText = "Supprimer"
-            supp.setAttribute("class", "deleteItem")
-            cartItemContentSettingsDelete.appendChild(supp)
+            
 
             //  Possibilité du changement de quantité dans le Panier
             let input = document.createElement("input")
@@ -162,8 +160,20 @@ for (let item in itemJson) {
         })
 
 }
+// Fonction pour generer les messages d erreur lors du remplissage de formulaire
 
 
+function erreur(id, element, texteF) {
+    
+
+    if (element) {
+        document.getElementById(id).innerHTML = ""
+    }
+
+    else {
+        document.getElementById(id).innerHTML = texteF
+    }
+}
 // Passer la commande 
 let order = document.getElementById("order")
 order.addEventListener("click", function (e) {
@@ -178,43 +188,32 @@ order.addEventListener("click", function (e) {
 
     }
     // Traitement des erreurs dans le formulaire via Regex
-    if (/^[A-Za-z]{1,}$/.test(firstName.value)) {
-    }
-    else {
-        window.alert("Erreur Prénom");
+    let firstNameRegexp = new RegExp(/^[A-Za-z]{1,}$/)
+    let testFirstName = firstNameRegexp.test(firstName.value)
+    let errorFirstName = erreur("firstNameErrorMsg", testFirstName, "Erreur Prénom")
+
+    let lastNameRegexp = new RegExp(/^[\w\W ]{1,}$/)
+    let testLastName = lastNameRegexp.test(lastName.value)
+    let errorLastName = erreur("lastNameErrorMsg", testLastName, "Erreur Nom")
+
+    let addressRegexp = new RegExp(/^[\w\W ]{1,}$/)
+    let testAddress = addressRegexp.test(address.value)
+    let errorAddress = erreur("addressErrorMsg", testAddress,  "Erreur Adresse")
+
+    let cityRegexp = new RegExp(/^[\w\W ]{1,}$/)
+    let testCity = cityRegexp.test(city.value)
+    let errorCity = erreur("cityErrorMsg", testCity,  "Erreur Ville")
+
+    let emailRegexp = new RegExp(/^[\w]+[@]{1}[\w]+[.]{1}[\w]{1,}$/)
+    let testEmail = emailRegexp.test(email.value)
+    let errorEmail = erreur("emailErrorMsg", testEmail, "Erreur Email")
+    console.log(testEmail);
+
+
+    if (testFirstName == false || testLastName == false || testAddress == false || testCity == false || testEmail == false) {
         return false
-    }
-
-    if (/^[\w\W]{1,}$/.test(lastName.value)) {
-    }
-    else {
-        window.alert("Erreur Nom")
-        return false
-    }
-
-    if (/^[\w\W ]{1,}$/.test(address.value)) {
 
     }
-    else {
-        window.alert("Erreur adresse")
-        return false
-    }
-
-    if (/^[\w\W ]{1,}$/.test(city.value)) {
-
-    }
-    else {
-        window.alert("Erreur Ville")
-        return false
-    }
-    if (/^[\w]+[@]{1}[\w]+[.]{1}[\w]{1,}$/.test(email.value)) {
-
-    }
-    else {
-        window.alert("Erreur email")
-        return false
-    }
-
     // Envoi de la demande de commande
     let products = []
     for (let i = 0; i < itemJson.length; i++) {
@@ -222,7 +221,7 @@ order.addEventListener("click", function (e) {
     }
     console.log(products);
 
-    fetch("http://localhost:3000/api/products/order", {
+    fetch("http://localhost:3000/api/products/order/", {
         method: "POST",
         body: JSON.stringify({ contact, products }),
         headers: {
@@ -239,21 +238,23 @@ order.addEventListener("click", function (e) {
             }
 
         })
-        
+
         .then(function (order) {
-                console.log(order);
-                document.getElementById("order")
-                localStorage.setItem("orderId", order.orderId)
-                document.location.href = "confirmation.html"
-                
-                console.log(contact.firstName);
-                alert("Merci pour votre commande "+ contact.firstName +" "+ contact.lastName)
+            console.log(order);
+            document.getElementById("order")
+            let command = order.orderId
+            console.log(command);
+            //localStorage.setItem("orderId", order.orderId)
+            document.location.href = "confirmation.html?orderId="+ order.orderId
+            alert("Merci pour votre commande " + contact.firstName + " " + contact.lastName)
         })
-        .catch (function (error) {
+        .catch(function (error) {
             alert("Erreur  manque de données dans la commande", error)
         })
 
 })
+
+
 
 
 

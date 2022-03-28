@@ -38,20 +38,18 @@ fetch("http://localhost:3000/api/products/" + id)
             opt.text = option
             colors.add(opt, null)
 
-
         })
 
         let addToCart = document.getElementById("addToCart")
 
         addToCart.addEventListener("click", () => {
-            if (quantity.value > 0 && quantity.value <= 100) {
+            if (quantity.value > 0 && quantity.value <= 100 && colors.value != "" ) {
                 let cartProducts = {
                     id: product._id,
                     quantity: document.getElementById("quantity").value,
                     color: document.getElementById("colors").value,
-
+                    
                 }
-                
                 let cartProductsAdd = JSON.parse(localStorage.getItem("cart"))
 
                 if (cartProductsAdd) {
