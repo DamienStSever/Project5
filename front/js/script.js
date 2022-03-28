@@ -11,18 +11,18 @@ fetch("http://localhost:3000/api/products/")
         let items = document.getElementById("items")
         for (let i = 0; i < products.length; i++) {
             console.table(products[i]);
-            
+
 
             let card = document.createElement("a")
             items.appendChild(card)
-            card.href="./product.html?id=" + products[i]._id
+            card.href = "./product.html?id=" + products[i]._id
 
-            
-            let article= document.createElement("article")
+
+            let article = document.createElement("article")
             card.appendChild(article)
 
             let h3 = document.createElement("h3")
-            h3.setAttribute("clasx","productName")
+            h3.setAttribute("clasx", "productName")
             h3.innerHTML = products[i].name
             article.appendChild(h3)
 
@@ -31,15 +31,12 @@ fetch("http://localhost:3000/api/products/")
             p.setAttribute("class", "productDescription")
             article.appendChild(p)
 
-            let img= document.createElement("img")
+            let img = document.createElement("img")
             img.src = products[i].imageUrl
             img.alt = products[i].altTxt
             article.appendChild(img)
+        }
 
-           
-
-        }   
-    
 
     })
     .catch(function (err) {

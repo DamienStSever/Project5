@@ -1,3 +1,4 @@
+// Récupération de l iD du produit
 var str = window.location.href;
 var url = new URL(str);
 var search_params = new URLSearchParams(url.search);
@@ -12,6 +13,8 @@ fetch("http://localhost:3000/api/products/" + id)
             ;
         }
     })
+
+    // Affichage des différents éléments du produits
     .then(function (product) {
         console.table(product);
 
@@ -40,55 +43,45 @@ fetch("http://localhost:3000/api/products/" + id)
 
         })
 
+        // Possibilite d ajouter les articles dans le panier. ( en choisissant la quantité et la couleur)
         let addToCart = document.getElementById("addToCart")
 
         addToCart.addEventListener("click", () => {
-            if (quantity.value > 0 && quantity.value <= 100 && colors.value != "" ) {
+            if (quantity.value > 0 && quantity.value <= 100 && colors.value != "") {
                 let cartProducts = {
                     id: product._id,
                     quantity: document.getElementById("quantity").value,
                     color: document.getElementById("colors").value,
-                    
+
                 }
                 let cartProductsAdd = JSON.parse(localStorage.getItem("cart"))
-
+                // Si produit existe deja dans le panier mise à jour de la quantité
                 if (cartProductsAdd) {
-                    console.log(cartProductsAdd);
-
-                    let resultFind = cartProductsAdd.find( 
+                    let resultFind = cartProductsAdd.find(
                         (sameProduct) => sameProduct.id === cartProducts.id && sameProduct.color === cartProducts.color);
-                        if (resultFind) {
-                            console.log("mise a jour ");
-                            resultFind.quantity = parseInt(resultFind.quantity) + parseInt(cartProducts.quantity);
-                            localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
+                    if (resultFind) {
+                        console.log("mise a jour ");
+                        resultFind.quantity = parseInt(resultFind.quantity) + parseInt(cartProducts.quantity);
+                        localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
+                    }
 
-                        }
-                        else {
-                            console.log("ajout d un nouveau produit");
-                            cartProductsAdd.push(cartProducts)
-                            localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
-                        }
-
-
-                    
+                    // Ajout d un nouveau produit dans le panier
+                    else {
+                        console.log("ajout d un nouveau produit");
+                        cartProductsAdd.push(cartProducts)
+                        localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
+                    }
 
                 }
+                // creation du panier
                 else {
                     console.log("Creation du panier");
                     cartProductsAdd = []
                     cartProductsAdd.push(cartProducts)
                     localStorage.setItem("cart", JSON.stringify(cartProductsAdd))
                 }
-
-
-
             }
-
-
-
-
         })
-
     })
     .catch(function (err) {
         console.log("Erreur", err)

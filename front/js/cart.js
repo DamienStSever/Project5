@@ -1,16 +1,14 @@
 // Récupération des données de la page produits
-
 let items = localStorage.getItem("cart");
 let itemJson = JSON.parse(items);
 
 // Fonction pour permettre la création des divers éléments des articles dans le panier
-
 function createItem(type, element, className) {
     let newItem = document.createElement(type)
     newItem.setAttribute("class", className)
     element.appendChild(newItem)
     return newItem
-    
+
 }
 // Affichage des données des articles
 let maxPrice = []
@@ -29,32 +27,26 @@ for (let item in itemJson) {
         })
 
         .then(function (product) {
-
-
             let cartItem = document.getElementById("cart__items")
 
             let article = createItem("article", cartItem, "cart__item")
             article.setAttribute("data-id", itemJson[item].id)
             article.setAttribute("data-color", itemJson[item].color)
 
-            let cartItemImg = createItem("div", article, "cart__item__img")  
-            
-            
+            let cartItemImg = createItem("div", article, "cart__item__img")
+
             let img = document.createElement("img")
             img.src = product.imageUrl
             img.alt = product.altTxt
             cartItemImg.appendChild(img)
 
             let cartItemContent = createItem("div", article, "cart__item__content")
-           
 
             let cartItemContentDescritpion = createItem("div", cartItemContent, "cart__item__content__description")
-            
 
             let nom = document.createElement("h2")
             nom.innerHTML = product.name
             cartItemContentDescritpion.appendChild(nom)
-
 
             let color = document.createElement("p")
             color.innerHTML = itemJson[item].color
@@ -65,19 +57,18 @@ for (let item in itemJson) {
             cartItemContentDescritpion.appendChild(price)
 
             let cartItemContentSettings = createItem("div", cartItemContent, "cart__item__content__settings")
-            
-            let cartItemContentSettingsQuantity = createItem("div", cartItemContentSettings,"cart__item__content__settings__quantity" )
-            
+
+            let cartItemContentSettingsQuantity = createItem("div", cartItemContentSettings, "cart__item__content__settings__quantity")
 
             let quantity = document.createElement("p")
             quantity.innerHTML = itemJson[item].quantity
             cartItemContentSettingsQuantity.appendChild(quantity)
 
             let cartItemContentSettingsDelete = createItem("div", cartItemContentSettings, "cart__item__content__settings__delete")
-            
+
             let supp = createItem("p", cartItemContentSettingsDelete, "deleteItem")
             supp.innerText = "Supprimer"
-            
+
 
             //  Possibilité du changement de quantité dans le Panier
             let input = document.createElement("input")
@@ -109,7 +100,6 @@ for (let item in itemJson) {
                 //Changement du prix total si changement de quantité 
                 updateCart[item].price = product.price * quantity.innerHTML
                 maxPrice.splice(item, 1, updateCart[item].price)
-                console.log(maxPrice);
                 totalPrice = maxPrice.reduce((a, b) => a + b, 0)
                 let totalP = document.getElementById("totalPrice")
                 totalP.innerHTML = totalPrice
@@ -119,7 +109,6 @@ for (let item in itemJson) {
 
             supp.addEventListener("click", function () {
 
-                console.log(itemJson.indexOf(itemJson[item]));
                 alert(" Le produit est supprimé")
                 itemJson.splice(itemJson.indexOf(itemJson[item]), 1)
                 localStorage.setItem("cart", JSON.stringify(itemJson))
@@ -129,7 +118,6 @@ for (let item in itemJson) {
                 totalQuantity.length = 0
                 for (let i = 0; i < itemJson.length; i++) {
                     totalQuantity.push(Number(itemJson[i].quantity))
-                    console.log(totalQuantity);
                 }
                 let quantityMax = totalQuantity.reduce((a, b) => a + b, 0)
                 let totalQ = document.getElementById("totalQuantity")
@@ -137,7 +125,6 @@ for (let item in itemJson) {
 
                 //Changement du total Prix après la suppression
                 maxPrice.splice(item, 1, 0)
-                console.log(maxPrice);
                 totalPrice = maxPrice.reduce((a, b) => a + b, 0)
                 let totalP = document.getElementById("totalPrice")
                 totalP.innerHTML = totalPrice
@@ -155,7 +142,6 @@ for (let item in itemJson) {
             let totalPrice = maxPrice.reduce((a, b) => a + b, 0)
             let totalP = document.getElementById("totalPrice")
             totalP.innerHTML = totalPrice
-            console.log(maxPrice);
 
         })
 
@@ -164,8 +150,6 @@ for (let item in itemJson) {
 
 
 function erreur(id, element, texteF) {
-    
-
     if (element) {
         document.getElementById(id).innerHTML = ""
     }
@@ -178,7 +162,6 @@ function erreur(id, element, texteF) {
 let order = document.getElementById("order")
 order.addEventListener("click", function (e) {
     e.preventDefault()
-    console.log("order");
     let contact = {
         firstName: document.getElementById("firstName").value,
         lastName: document.getElementById("lastName").value,
@@ -190,36 +173,35 @@ order.addEventListener("click", function (e) {
     // Traitement des erreurs dans le formulaire via Regex
     let firstNameRegexp = new RegExp(/^[A-Za-z]{1,}$/)
     let testFirstName = firstNameRegexp.test(firstName.value)
-    let errorFirstName = erreur("firstNameErrorMsg", testFirstName, "Erreur Prénom")
+    erreur("firstNameErrorMsg", testFirstName, "Erreur Prénom")
 
     let lastNameRegexp = new RegExp(/^[\w\W ]{1,}$/)
     let testLastName = lastNameRegexp.test(lastName.value)
-    let errorLastName = erreur("lastNameErrorMsg", testLastName, "Erreur Nom")
+    erreur("lastNameErrorMsg", testLastName, "Erreur Nom")
 
     let addressRegexp = new RegExp(/^[\w\W ]{1,}$/)
     let testAddress = addressRegexp.test(address.value)
-    let errorAddress = erreur("addressErrorMsg", testAddress,  "Erreur Adresse")
+    erreur("addressErrorMsg", testAddress, "Erreur Adresse")
 
     let cityRegexp = new RegExp(/^[\w\W ]{1,}$/)
     let testCity = cityRegexp.test(city.value)
-    let errorCity = erreur("cityErrorMsg", testCity,  "Erreur Ville")
+    erreur("cityErrorMsg", testCity, "Erreur Ville")
 
     let emailRegexp = new RegExp(/^[\w]+[@]{1}[\w]+[.]{1}[\w]{1,}$/)
     let testEmail = emailRegexp.test(email.value)
-    let errorEmail = erreur("emailErrorMsg", testEmail, "Erreur Email")
-    console.log(testEmail);
+    erreur("emailErrorMsg", testEmail, "Erreur Email")
 
 
     if (testFirstName == false || testLastName == false || testAddress == false || testCity == false || testEmail == false) {
         return false
 
     }
+
     // Envoi de la demande de commande
     let products = []
     for (let i = 0; i < itemJson.length; i++) {
         products.push(itemJson[i].id)
     }
-    console.log(products);
 
     fetch("http://localhost:3000/api/products/order/", {
         method: "POST",
@@ -228,30 +210,21 @@ order.addEventListener("click", function (e) {
             "Accept": "application/json",
             "Content-Type": "application/json"
         }
-
-
     })
         .then(function (res) {
-            console.log(res);
             if (res.ok) {
                 return res.json()
             }
-
         })
 
         .then(function (order) {
-            console.log(order);
             document.getElementById("order")
-            let command = order.orderId
-            console.log(command);
-            //localStorage.setItem("orderId", order.orderId)
-            document.location.href = "confirmation.html?orderId="+ order.orderId
+            document.location.href = "confirmation.html?orderId=" + order.orderId
             alert("Merci pour votre commande " + contact.firstName + " " + contact.lastName)
         })
         .catch(function (error) {
             alert("Erreur  manque de données dans la commande", error)
         })
-
 })
 
 
