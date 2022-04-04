@@ -25,7 +25,8 @@ fetch("http://localhost:3000/api/products/" + id)
         itemImage.appendChild(img)
 
         let title = document.getElementById("title")
-        title.HTML = product.name
+        //title.innerHTML = product.name
+        
 
         let price = document.getElementById("price")
         price.innerHTML = product.price
@@ -40,7 +41,7 @@ fetch("http://localhost:3000/api/products/" + id)
             opt.value = option
             opt.text = option
             colors.add(opt, null)
-
+    
         })
 
         // Possibilite d ajouter les articles dans le panier. ( en choisissant la quantité et la couleur)

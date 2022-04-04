@@ -69,7 +69,6 @@ for (let item in itemJson) {
             let supp = createItem("p", cartItemContentSettingsDelete, "deleteItem")
             supp.innerText = "Supprimer"
 
-
             //  Possibilité du changement de quantité dans le Panier
             let input = document.createElement("input")
             cartItemContentSettingsQuantity.appendChild(input)
@@ -84,6 +83,7 @@ for (let item in itemJson) {
                 quantity.innerHTML = this.value
 
                 // Changement de quantité dans le Local Storage
+
                 let updateCart = JSON.parse(localStorage.getItem("cart"))
                 updateCart[item].quantity = this.value
                 localStorage.setItem("cart", JSON.stringify(updateCart))
@@ -142,7 +142,7 @@ for (let item in itemJson) {
             let totalPrice = maxPrice.reduce((a, b) => a + b, 0)
             let totalP = document.getElementById("totalPrice")
             totalP.innerHTML = totalPrice
-
+            
         })
 
 }
